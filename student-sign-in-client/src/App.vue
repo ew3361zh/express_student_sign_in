@@ -41,7 +41,6 @@ export default {
         this.students = students
         //this.students is the vue data, students is the promise returned from api
       })
-    }
     },
     newStudentAdded (student) {
      this.$student_api.addStudent(student).then( () => {
@@ -89,6 +88,7 @@ export default {
 
     }
   }
+}
 
 </script>
 
