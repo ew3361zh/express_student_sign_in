@@ -14,6 +14,17 @@ app.use(express.json())
 //all requests will be made to path beginning with /api
 app.use('/api', api_routes)
 
+//error handling
+app.use(function(req, res, next) { //this code will run only if app.use(/api, api_routes) doesn't run
+    res.status(404).send('Not found!!!') //respond to anything that's not one of the routes we've configured
+})
+
+//for server errors
+app.use(function(err, req, res, next){
+    console.error(err.stack)
+    res.status(500).send('Server error :(')
+})
+
 //create server to run app that has confirmation message that server is running
 let server = app.listen(process.env.PORT || 3000, function() {
     console.log('Express server running on port ', server.address().port)

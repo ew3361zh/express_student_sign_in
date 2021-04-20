@@ -22,7 +22,7 @@ export default {
         student: Object,
         edit: Boolean
     },
-    emits: ['student-arrived-or-left'],
+    emits: ['student-arrived-or-left', 'delete-student'],
     methods: {
         arrivedOrLeft(student, present) {
             this.$emit('student-arrived-or-left', student, present)

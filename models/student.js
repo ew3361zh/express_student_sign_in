@@ -6,15 +6,24 @@ module.exports = (sequelize, DataTypes) => {
     // these will be the column headers and datatypes
     let Student = sequelize.define('Student', {
         name: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull: false //won't allow a student's name to be blank
         },
 
         starID: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true, //starID must be unique
+            validate: {
+                is: /^[a-z]{2}\d{4}[a-z]{2}$/
+                //regex pattern match to starID pattern "aa1234aa"
+            }
         },
 
         present: {
-            type: DataTypes.BOOLEAN
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false //present set to false
         }
 
     })
@@ -22,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     // force true means will overwrite previous database info
     // false means keep the table
     Student.sync( {force: false} ).then( () => {
-        console.log('Synced student table ')
+        console.log('Synced student table')
     })
 
     return Student //Student model

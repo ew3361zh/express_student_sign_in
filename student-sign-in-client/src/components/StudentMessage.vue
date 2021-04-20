@@ -1,5 +1,5 @@
 <template>
-    <div v-if="student.name">
+    <div v-show="student.name">
 
         <div class="alert alert-success" v-if="student.present">
             Welcome {{ student.name }}

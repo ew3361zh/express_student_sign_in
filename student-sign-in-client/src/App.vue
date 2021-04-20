@@ -1,13 +1,13 @@
 <template>
   <div id="app">
-    <new-student-form v-on:student-added="newStudentAdded"></new-student-form>
-    <student-table 
+    <NewStudentForm v-on:student-added="newStudentAdded"></NewStudentForm>
+    <StudentTable
     v-bind:students="students" 
-    v-on:student-arrived-or-left="studentArrivedOrLeft"
+    v-on:student-present="studentArrivedOrLeft"
     v-on:delete-student="studentDeleted"
     >
-    </student-table>
-     <student-message v-bind:student="mostRecentStudent"></student-message>
+    </StudentTable>
+     <StudentMessage v-bind:student="mostRecentStudent"></StudentMessage>
   </div>
 </template>
 
@@ -17,16 +17,16 @@ import StudentMessage from './components/StudentMessage.vue'
 import StudentTable from './components/StudentTable.vue'
 
 export default {
-  name: 'App',
+  name: 'app',
   components: {
     NewStudentForm,
     StudentMessage,
     StudentTable
   },
   data () {
-    return{
+    return {
       students: [],
-      mostRecentStudent: []
+      mostRecentStudent: {}
     }
   },
   mounted() {
@@ -40,55 +40,45 @@ export default {
       this.$student_api.getAllStudents().then( students => {
         this.students = students
         //this.students is the vue data, students is the promise returned from api
+      }).catch( err => {
+        console.error('Error getting latest student list', err.response)
+        alert('Unable to fetch student list!')
       })
-    }
     },
-    newStudentAdded (student) {
+    newStudentAdded(student) {
      this.$student_api.addStudent(student).then( () => {
         this.updateStudents()
      })
-     
-     
-      // this.students.push(student)
-      // this.students.sort(function(s1,s2) {
-      //   return s1.name.toLowerCase() < s2.name.toLowerCase() ? -1 : +1
-      // })
+     .catch( err => {
+       console.log('Error fetching student list', err)
+       if (err.response.data && Array.isArray(err.response.data)) {
+       let msg = err.response.data.join(',')
+       alert('Error adding student\n' + msg)
+       } else {
+         console.error('Error adding student', err.response)
+         alert('Sorry, unable to add student')
+       }
+     })
     },
     studentArrivedOrLeft(student, present) {
-      
-      
-      
-      // find student in array of students
-      // update their present attribute
-
-      // let updateStudent = this.students.find( function(s) {
-      //   if (s.name === student.name  && s.starID === student.starID) {
-      //     //this is the student we're looking to update
-      //     return true
-      //   }
-      // })
-
-      // if (updateStudent) {
-      //   updateStudent.present = present
-      //   this.mostRecentStudent = updateStudent
-      // }
+      student.present = present // update present value
+      this.$student_api.updateStudent(student).then( () => {
+        this.mostRecentStudent = student
+        this.updateStudents()
+      }).catch( () => alert('Unable to update student'))
     },
     studentDeleted(student) {
-     
-
-     
-      // filter returns a new array of all students for whom the function returns true
-      // this.students = this.students.filter(function(s) {
-      //   if (s != student) {
-      //     return true
-      //   }
-      // })
-
-      // // clear welcome/goodbye message
-      // this.mostRecentStudent={}
+     this.$student_api.deleteStudent(student.id).hten( () => {
+       this.updateStudents()
+       this.mostRecentStudent = {} //clear welcome/goodbye student message
+     }).catch( err => {
+     console.error('Error deleting student', err.response)
+     alert('Unable to delete student')
+     })
 
     }
   }
+}
 
 </script>
 
