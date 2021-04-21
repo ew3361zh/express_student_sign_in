@@ -1,6 +1,4 @@
-// import 'axios'
 import axios from 'axios'
-
 
 let base_url = '/api/students' //axios will understand the 127.0.0...part is implied
 
@@ -17,7 +15,7 @@ export default {
         }) //same effect as our curl command
     },
 
-    updatedStudent(student) {
+    updateStudent(student) {
         // create url in the form of /api/students/1
         return axios.patch(`${base_url}/${student.id}`, student).then(response => {
             return response.data

@@ -25,13 +25,14 @@ router.post('/students', function(req, res, next) {
             //respond with 400 error code means bad request - include error messages
             let messages = err.errors.map ( e=> e.message )
             return res.status(400).json(messages) //json array of sql validation errors
-        }
+        }else {
         //otherwise something unexpected has gone wrong - likely a server error
         return next(err) //this route's not going to deal with it, control will go back to server.js
+        }
     })
 })
 
-router.patch('/students/:id', function(res, req, next) {
+router.patch('/students/:id', function(req, res, next) {
     // student ID will equal db id for student
     let studentID = req.params.id
     let updatedStudent = req.body
@@ -42,9 +43,11 @@ router.patch('/students/:id', function(res, req, next) {
             if (numberOfRowsModified == 1) { //exactly 1 row changed
             return res.send('yessiree updated!') //update row where id = studentID
             }
-            else { //no rows changed (student not found)
+            else {
+             //no rows changed (student not found)
                 return res.status(404).json(['Student with that id not found'])
             }
+            
         })
         .catch( err => {
             //if validation error, let user know it's a bad request - modifying student to have no name or no starID - user problem

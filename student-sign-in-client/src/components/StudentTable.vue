@@ -24,7 +24,7 @@
                     <student-row 
                         v-for="student in students"
                         v-bind:student="student" 
-                        v-bind:key="student.starID"
+                        v-bind:key="student.name"
                         v-bind:edit="editTable"
                         v-on:student-arrived-or-left="arrivedOrLeft"
                         v-on:delete-student="deleteStudent"

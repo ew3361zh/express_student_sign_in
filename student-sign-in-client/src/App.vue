@@ -65,10 +65,13 @@ export default {
       this.$student_api.updateStudent(student).then( () => {
         this.mostRecentStudent = student
         this.updateStudents()
-      }).catch( () => alert('Unable to update student'))
+      }).catch( err => { 
+        console.error('Error updating student', err.response)
+        alert('Unable to update student')
+      })
     },
     studentDeleted(student) {
-     this.$student_api.deleteStudent(student.id).hten( () => {
+     this.$student_api.deleteStudent(student.id).then( () => {
        this.updateStudents()
        this.mostRecentStudent = {} //clear welcome/goodbye student message
      }).catch( err => {
